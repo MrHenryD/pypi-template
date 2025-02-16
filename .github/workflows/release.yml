@@ -1,0 +1,36 @@
+name: Publish to PyPI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          pip install ".[testing]"
+
+      - name: Run pytest
+        run: |
+          PYTHONPATH=teenytiny pytest -s -v
+
+      - name: Build the package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Publish to PyPI
+        run: |
+          twine upload --repository testpypi dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
