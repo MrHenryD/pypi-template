@@ -1,12 +1,10 @@
-name: CI
+name: Publish to PyPI
 
 on:
-  pull_request:
-    branches:
-      - '*'
+  workflow_dispatch:
 
 jobs:
-  test:
+  build_and_publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,3 +23,14 @@ jobs:
       - name: Run pytest
         run: |
           PYTHONPATH=teenytiny pytest -s -v
+
+      - name: Build the package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Publish to PyPI
+        run: |
+          twine upload --repository testpypi dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

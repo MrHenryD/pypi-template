@@ -28,3 +28,6 @@ build-release:
 	rm -rf build
 	python setup.py bdist_wheel
 	python setup.py sdist
+
+release-pypi-test:
+	twine upload --repository testpypi dist/*
