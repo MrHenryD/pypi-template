@@ -37,7 +37,7 @@ _keywords = (
 
 setup(
     name="teenytiny",
-    version="0.1.0",
+    version="0.1.1",
     author="MrHenryD",
     author_email="hi@example.com",
     description="The teeny tiny ML toolkit",
