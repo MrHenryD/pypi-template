@@ -17,10 +17,13 @@ install: activate
 style:
 	black $(fmt_dir)
 
-test: activate
-	pytest -s -v
+security:
+	bandit -r $(PACKAGE)
 
-pre-release:
+test: activate
+	pytest --cov=$(PACKAGE) -s -v
+
+pre-release: security test
 	python utils/version.py $(CHANGE_TYPE)
 
 build-release:

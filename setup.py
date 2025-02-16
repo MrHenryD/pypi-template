@@ -10,6 +10,10 @@ _deps = [
     "parameterized",
     "click",
     "black",
+    "coverage",
+    "pytest-cov",
+    "bandit",
+    "flake8",
     "wheel",
     "twine",
 ]
@@ -25,7 +29,10 @@ def identify_deps(*names) -> list[str]:
 
 extras = {}
 extras["base"] = identify_deps("dataclasses", "tqdm")
-extras["dev"] = identify_deps("pytest", "parameterized", "click", "black", "wheel", "twine")
+extras["dev"] = identify_deps(
+    "pytest", "parameterized", "click", "black", "wheel", "twine",
+    "coverage", "pytest-cov", "bandit",
+)
 extras["testing"] = (
     extras["base"]
     + extras["dev"]
@@ -38,7 +45,7 @@ _keywords = (
 
 setup(
     name="teenytiny",
-    version="0.1.1",
+    version="0.1.2",
     author="MrHenryD",
     author_email="hi@example.com",
     description="The teeny tiny ML toolkit",

@@ -24,4 +24,9 @@ jobs:
 
       - name: Run pytest
         run: |
-          PYTHONPATH=teenytiny pytest -s -v
+          PYTHONPATH=teenytiny pytest --cov=teenytiny -s -v
+      
+      - name: Run security checks
+        run: |
+          bandit -r teenytiny
+
