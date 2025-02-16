@@ -10,6 +10,7 @@ _deps = [
     "parameterized",
     "click",
     "black",
+    "wheel",
     "twine",
 ]
 
@@ -24,7 +25,7 @@ def identify_deps(*names) -> list[str]:
 
 extras = {}
 extras["base"] = identify_deps("dataclasses", "tqdm")
-extras["dev"] = identify_deps("pytest", "parameterized", "click", "black", "twine")
+extras["dev"] = identify_deps("pytest", "parameterized", "click", "black", "wheel", "twine")
 extras["testing"] = (
     extras["base"]
     + extras["dev"]
