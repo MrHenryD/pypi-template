@@ -1,36 +1,86 @@
-PACKAGE=teenytiny
-PYTHON_VERSION=3.11.9
-CHANGE_TYPE ?= patch
+.PHONY: help install test test-unit test-integration test-performance test-all clean lint format type-check coverage docs
 
-fmt_dir := teenytiny tests utils
+help:
+	@echo "Available commands:"
+	@echo "  help          - Show this help message"
+	@echo "  setup-pyenv   - Set up Python environment with pyenv and virtualenv"
+	@echo "  install        - Install package in development mode"
+	@echo "  install-dev    - Install with development dependencies"
+	@echo "  test          - Run unit tests (default)"
+	@echo "  test-unit     - Run unit tests only"
+	@echo "  test-integration - Run integration tests"
+	@echo "  test-performance - Run performance tests"
+	@echo "  test-all      - Run all tests"
+	@echo "  coverage      - Run tests with coverage report"
+	@echo "  coverage-html - Run tests with HTML coverage report"
+	@echo "  lint          - Run flake8 linting"
+	@echo "  format        - Format code with black"
+	@echo "  type-check    - Run mypy type checking"
+	@echo "  clean         - Clean up temporary files"
+	@echo "  ci            - Run all CI checks (lint, type-check, test-all)"
 
 
-export PYTHONPATH=teenytiny
+setup-pyenv:
+	pyenv local 3.11;
+	python3 -m virtualenv venv;
 
+install:
+	poetry install
 
-activate:
-	pyenv local $(PYTHON_VERSION)
+install-dev:
+	poetry install --extras dev
 
-install: activate
-	pip install ".[testing]"
+test: test-unit
 
-style:
-	black $(fmt_dir)
+test-unit:
+	poetry run pytest -m "unit" tests/ -v
 
-security:
-	bandit -r $(PACKAGE)
+test-integration:
+	poetry run pytest -m "integration" tests/ -v
 
-test: activate
-	pytest --cov=$(PACKAGE) -s -v
+test-performance:
+	poetry run pytest -m "performance" tests/ -v
 
-pre-release: security test
-	python utils/version.py $(CHANGE_TYPE)
+test-all:
+	poetry run pytest tests/ -v
+
+coverage:
+	poetry run pytest --cov=teenytiny --cov-report=term-missing tests/
+
+coverage-html:
+	poetry run pytest --cov=teenytiny --cov-report=html --cov-report=term-missing tests/
+	@echo "HTML coverage report generated in htmlcov/"
+
+lint:
+	poetry run flake8 teenytiny/
+
+format:
+	poetry run black teenytiny/ tests/
+
+type-check:
+	poetry run mypy teenytiny/
+
+clean:
+	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -delete
+	find . -type d -name "*.egg-info" -exec rm -rf {} +
+	rm -rf build/
+	rm -rf dist/
+	rm -rf htmlcov/
+	rm -rf .coverage
+	rm -rf .pytest_cache/
+	rm -rf .mypy_cache/
+
+ci: lint type-check test-all
+	@echo "All CI checks passed!"
+
+pre-release: lint type-check test-all
+	poetry run python utils/version.py $(CHANGE_TYPE)
 
 build-release:
-	rm -rf dist
-	rm -rf build
-	python setup.py bdist_wheel
-	python setup.py sdist
+	poetry build
 
 release-pypi-test:
-	twine upload --repository testpypi dist/*
+	poetry config repositories.testpypi https://test.pypi.org/legacy/
+	poetry config pypi-token.testpypi $(PYPI_TOKEN_TEST)
+	poetry publish --build --repository testpypi

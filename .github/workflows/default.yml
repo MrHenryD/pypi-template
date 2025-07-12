@@ -16,17 +16,18 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
           
       - name: Install dependencies
         run: |
-          pip install ".[testing]"
+          pip install poetry
+          poetry install --extras "testing"
 
       - name: Run pytest
         run: |
-          PYTHONPATH=teenytiny pytest --cov=teenytiny -s -v
+          poetry run pytest --cov=teenytiny -s -v
       
       - name: Run security checks
         run: |
-          bandit -r teenytiny
+          poetry run bandit -r teenytiny
 

@@ -18,20 +18,20 @@ jobs:
           
       - name: Install dependencies
         run: |
-          pip install ".[testing]"
+          pip install poetry
+          poetry install --extras "testing"
 
       - name: Run pytest
         run: |
-          PYTHONPATH=teenytiny pytest -s -v
+          poetry run pytest --cov=teenytiny -s -v
 
       - name: Build the package
         run: |
-          python setup.py bdist_wheel
-          python setup.py sdist
+          poetry build
 
       - name: Publish to PyPI
         run: |
-          twine upload --repository testpypi dist/*
+          poetry config repositories.testpypi https://test.pypi.org/legacy/
+          poetry publish --repository testpypi --skip-existing --no-interaction
         env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          POETRY_PYPI_TOKEN_TESTPYPI: ${{ secrets.PYPI_PASSWORD }}

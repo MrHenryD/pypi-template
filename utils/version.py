@@ -37,7 +37,7 @@ def bump_version(change: Change, version: str) -> str:
 @click.option(
     "-f",
     "--file-path",
-    default="setup.py",
+    default="pyproject.toml",
     type=click.Path(exists=True),
     help="Location of `setup.py`",
 )
@@ -53,9 +53,9 @@ def update_version(change: Change, file_path: str):
         setup_content = f.read()
 
     # Find the version line in setup.py using regex
-    match = re.search(r"version=['\"](\d+\.\d+\.\d+)['\"]", setup_content)
+    match = re.search(r"version = ['\"](\d+\.\d+\.\d+)['\"]", setup_content)
     if not match:
-        click.echo("Version not found in setup.py.")
+        click.echo(f"Version not found in {file_path}.")
         return
 
     # Extract the current version
@@ -68,7 +68,7 @@ def update_version(change: Change, file_path: str):
 
     # Replace the old version with the new version in the setup.py content
     updated_content = setup_content.replace(
-        f'version="{current_version}"', f'version="{new_version}"'
+        f'version = "{current_version}"', f'version = "{new_version}"'
     )
 
     # Write the updated content back to setup.py

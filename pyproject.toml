@@ -1,0 +1,91 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "teenytiny"
+version = "0.1.4"
+description = "The teeny tiny ML toolkit"
+authors = [
+    "MrHenryD <hi@example.com>"
+]
+license = "Apache-2.0"
+readme = "README.md"
+exclude = ["tests"]
+homepage = "https://github.com/MrHenryD/teenytiny"
+repository = "https://github.com/MrHenryD/teenytiny"
+packages = [
+    { include = "teenytiny" }
+]
+keywords = ["ai", "toolkit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Games/Entertainment",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Typing :: Typed"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11.0"
+dataclasses = "*"
+
+
+[tool.poetry.extras]
+base = ["dataclasses", "tqdm"]
+dev = [
+    "pytest",
+    "parameterized",
+    "click",
+    "black",
+    "wheel",
+    "twine",
+    "coverage",
+    "pytest-cov",
+    "bandit",
+    "mypy"
+]
+testing = [
+    "dataclasses",
+    "tqdm",
+    "pytest",
+    "parameterized",
+    "click",
+    "black",
+    "wheel",
+    "twine",
+    "coverage",
+    "pytest-cov",
+    "bandit",
+    "mypy"
+]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+parameterized = "*"
+click = "*"
+black = "*"
+coverage = "*"
+pytest-cov = "*"
+bandit = "*"
+flake8 = "*"
+wheel = "*"
+twine = "*"
+mypy = "^1.16.1"
+
+
+[tool.poetry.group.testing.dependencies]
+mypy = "^1.16.1"
+
+[tool.pytest.ini_options]
+markers = [
+    "unit: marks unit tests",
+    "integration: marks integration tests",
+    "performance: marks performnace tests"
+]
